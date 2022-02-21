@@ -133,7 +133,7 @@ class CControllerWidgetSvgGraphView extends CControllerWidget {
 			$graph_data['time_period']['time_to'] = $range_time_parser->getDateTime(false)->getTimestamp();
 		}
 
-		$svg_data = CSvgGraphHelper::get($graph_data, $width, $height);
+		$svg_data = CSvgGraphHelper::get($width, $height, $graph_data);
 		if ($svg_data['errors']) {
 			error($svg_data['errors']);
 		}

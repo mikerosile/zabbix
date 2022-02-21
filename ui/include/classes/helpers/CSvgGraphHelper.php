@@ -42,7 +42,7 @@ class CSvgGraphHelper {
 	 *
 	 * @return array
 	 */
-	public static function get(array $options = [], $width, $height) {
+	public static function get($width, $height, array $options = []) {
 		$metrics = [];
 		$errors = [];
 
@@ -55,11 +55,11 @@ class CSvgGraphHelper {
 
 		self::applyOverrides($metrics, $options['overrides']);
 		// Apply time periods for each $metric, based on graph/dashboard time as well as metric level timeshifts.
-		self::getTimePeriods($metrics, $options['time_period']);
+		self::getTimePeriods($options['time_period'], $metrics);
 		// Find what data source (history or trends) will be used for each metric.
-		self::getGraphDataSource($metrics, $errors, $options['data_source'], $width);
+		self::getGraphDataSource($options['data_source'], $width, $metrics, $errors);
 		// Load Data for each metric.
-		self::getMetricsData($metrics, $width);
+		self::getMetricsData($width, $metrics);
 		// Load aggregated Data for each dataset.
 		self::getMetricsAggregatedData($metrics);
 
@@ -265,7 +265,7 @@ class CSvgGraphHelper {
 	/**
 	 * Select data to show in graph for each metric.
 	 */
-	protected static function getMetricsData(array &$metrics = [], $width) {
+	protected static function getMetricsData($width, array &$metrics = []) {
 		// To reduce number of requests, group metrics by time range.
 		$tr_groups = [];
 		foreach ($metrics as $metric_num => &$metric) {
@@ -324,7 +324,7 @@ class CSvgGraphHelper {
 	/**
 	 * Calculate what data source must be used for each metric.
 	 */
-	protected static function getGraphDataSource(array &$metrics = [], array &$errors = [], $data_source, $width) {
+	protected static function getGraphDataSource($data_source, $width, array &$metrics = [], array &$errors = []) {
 		/**
 		 * If data source is not specified, calculate it automatically. Otherwise, set given $data_source to each
 		 * $metric.
@@ -692,7 +692,7 @@ class CSvgGraphHelper {
 	/**
 	 * Apply time period for each metric.
 	 */
-	protected static function getTimePeriods(array &$metrics = [], array $options) {
+	protected static function getTimePeriods(array $options, array &$metrics = []) {
 		foreach ($metrics as &$metric) {
 			$metric['time_period'] = $options;
 
